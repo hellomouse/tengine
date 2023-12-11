@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+basedir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+cd "$basedir"
+set -x
+
+# clean everything, including submodules
+git clean -xfd
+git submodule foreach --recursive git clean -xfd
+git reset --hard
+git submodule foreach --recursive git reset --hard

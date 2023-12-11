@@ -1,3 +1,9 @@
+## Hellomouse Tengine configuration
+
+Includes scripts for more conveniently building Tengine.
+
+Original readme is below.
+
 <h1 align="center" style="border-bottom: none">
     <br>Tengine
 </h1>

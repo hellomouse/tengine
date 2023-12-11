@@ -1,0 +1,22 @@
+#!/bin/bash
+set -e
+basedir="$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")"
+cd "$basedir"
+set -x
+
+rm -rf build/out
+mkdir build/out
+destdir="$(readlink -f build/out)"
+
+# install deps and tengine
+make -C deps/luajit2 DESTDIR="$destdir" install
+DESTDIR="$destdir" ninja -C deps/boringssl/build install
+cp -v deps/xquic/build/libxquic.so "$destdir/opt/nginx/lib"
+make DESTDIR="$destdir" install
+
+# install lua-resty-core
+make -C deps/lua-resty-core DESTDIR="$destdir" LUA_LIB_DIR="/opt/nginx/share/lua/5.1/" install
+make -C deps/lua-resty-lrucache DESTDIR="$destdir" LUA_LIB_DIR="/opt/nginx/share/lua/5.1/" install
+
+# tarball
+tar -C "$destdir/opt/nginx" -cvzf "build/dist.tar.gz" .

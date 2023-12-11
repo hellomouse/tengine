@@ -240,8 +240,9 @@ ngx_xquic_engine_init(ngx_cycle_t *cycle)
     }
     ngx_memcpy(engine_ssl_config->cert_file, qmcf->certificate.data, qmcf->certificate.len);
 
-    engine_ssl_config->ciphers = XQC_TLS_CIPHERS;
-    engine_ssl_config->groups = XQC_TLS_GROUPS;
+    /* TODO: make configurable? */
+    engine_ssl_config->ciphers = "TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384";
+    engine_ssl_config->groups = "X25519:X448:P-256:P-384:P-521";
 
     /* copy session ticket */
     char g_ticket_file[NGX_XQUIC_TMP_BUF_LEN]={0};
@@ -294,6 +295,10 @@ ngx_xquic_engine_init(ngx_cycle_t *cycle)
         && ngx_strncmp(qmcf->congestion_control.data, "bbr", sizeof("bbr")-1) == 0) 
     {
         cong_ctrl = xqc_bbr_cb;
+    } else if (qmcf->congestion_control.len == sizeof("bbr")-1
+        && ngx_strncmp(qmcf->congestion_control.data, "bbr2", sizeof("bbr2")-1) == 0)
+    {
+        cong_ctrl = xqc_bbr2_cb;
     } else if (qmcf->congestion_control.len == sizeof("reno")-1
         && ngx_strncmp(qmcf->congestion_control.data, "reno", sizeof("reno")-1) == 0) 
     {

@@ -1056,7 +1056,7 @@ ngx_stream_ssl_merge_conf(ngx_conf_t *cf, void *parent, void *child)
     cln->data = &conf->ssl;
 
 #if (T_NGX_STREAM_SNI)
-#if (SSL_CTRL_SET_TLSEXT_HOSTNAME)
+#ifdef SSL_CTRL_SET_TLSEXT_HOSTNAME
     if (SSL_CTX_set_tlsext_servername_callback(conf->ssl.ctx,
                                                ngx_stream_ssl_servername)
         == 0)
@@ -1066,7 +1066,7 @@ ngx_stream_ssl_merge_conf(ngx_conf_t *cf, void *parent, void *child)
             "nginx was built with SNI support, however, now it is linked "
             "dynamically to an OpenSSL library which has no tlsext support, "
             "therefore SNI is not available");
-#if (SSL_CTRL_SET_TLSEXT_HOSTNAME)
+#ifdef SSL_CTRL_SET_TLSEXT_HOSTNAME
     }
 #endif
 #else

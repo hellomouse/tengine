@@ -1,0 +1,24 @@
+[submodule "deps/xquic"]
+	path = deps/xquic
+	url = https://github.com/hellomouse/xquic
+[submodule "deps/luajit2"]
+	path = deps/luajit2
+	url = https://github.com/openresty/luajit2
+[submodule "deps/boringssl"]
+	path = deps/boringssl
+	url = https://github.com/google/boringssl
+[submodule "deps/ngx-fancyindex"]
+	path = deps/ngx-fancyindex
+	url = https://github.com/aperezdc/ngx-fancyindex
+[submodule "deps/njs"]
+	path = deps/njs
+	url = https://github.com/nginx/njs
+[submodule "deps/headers-more-nginx-module"]
+	path = deps/headers-more-nginx-module
+	url = https://github.com/openresty/headers-more-nginx-module
+[submodule "deps/lua-resty-core"]
+	path = deps/lua-resty-core
+	url = https://github.com/openresty/lua-resty-core
+[submodule "deps/lua-resty-lrucache"]
+	path = deps/lua-resty-lrucache
+	url = https://github.com/openresty/lua-resty-lrucache

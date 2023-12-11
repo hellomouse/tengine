@@ -509,7 +509,7 @@ USE_SHA1=YES
 NGX_DTRACE_PROVIDERS="$NGX_DTRACE_PROVIDERS $ngx_addon_dir/dtrace/ngx_lua_provider.d"
 NGX_TAPSET_SRCS="$NGX_TAPSET_SRCS $ngx_addon_dir/tapset/ngx_lua.stp"
 
-CORE_INCS="$CORE_INCS $ngx_addon_dir/src/api"
+CORE_INCS="$CORE_INCS $ngx_addon_dir/src $ngx_addon_dir/src/api"
 
 CFLAGS="$CFLAGS -DNDK_SET_VAR"
 

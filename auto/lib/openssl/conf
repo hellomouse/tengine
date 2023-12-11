@@ -177,7 +177,7 @@ END
     exit 1
 fi
 
-
+: <<'DISABLE'
 ngx_feature="OpenSSL DTLS support"
 ngx_feature_name=
 ngx_feature_run=no
@@ -195,3 +195,4 @@ ngx_feature_test="SSL_CTX_set_cookie_generate_cb(NULL, NULL)"
 if [ $ngx_found = yes ]; then
     have=T_NGX_HAVE_DTLS . auto/have
 fi
+DISABLE
