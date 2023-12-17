@@ -18,5 +18,9 @@ make DESTDIR="$destdir" install
 make -C deps/lua-resty-core DESTDIR="$destdir" LUA_LIB_DIR="/opt/nginx/share/lua/5.1/" install
 make -C deps/lua-resty-lrucache DESTDIR="$destdir" LUA_LIB_DIR="/opt/nginx/share/lua/5.1/" install
 
+# swap out config
+rm -rv "$destdir/opt/nginx/conf"
+cp -rvT conf "$destdir/opt/nginx/conf.default"
+
 # tarball
 tar -C "$destdir/opt/nginx" -cvzf "build/dist.tar.gz" .
