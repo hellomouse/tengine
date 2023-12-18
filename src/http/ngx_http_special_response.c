@@ -88,6 +88,7 @@ static u_char ngx_http_server_info_tail[] =
 ;
 
 
+#if FALSE
 static u_char ngx_http_error_banner[] =
 "<hr/>Powered by " TENGINE;
 
@@ -98,6 +99,7 @@ static u_char ngx_http_error_full_banner[] =
 
 static u_char ngx_http_error_powered_by[] =
 "<hr/>Powered by ";
+#endif
 #endif
 
 
@@ -798,6 +800,7 @@ ngx_http_send_special_response(ngx_http_request_t *r,
                                           + (ib ? (ib->last - ib->pos) : 0)
                                           + sizeof(ngx_http_error_tail) - 1;
 
+#if FALSE
         if (clcf->server_tag_type == NGX_HTTP_SERVER_TAG_ON) {
             r->headers_out.content_length_n += clcf->server_tokens
                 ? sizeof(ngx_http_error_full_banner) - 1
@@ -808,6 +811,7 @@ ngx_http_send_special_response(ngx_http_request_t *r,
                                                - 1;
             r->headers_out.content_length_n += clcf->server_tag.len;
         }
+#endif
 #else
         r->headers_out.content_length_n = ngx_http_error_pages[err].len + len;
 #endif
@@ -875,7 +879,7 @@ ngx_http_send_special_response(ngx_http_request_t *r,
     b->pos = ngx_http_error_pages[err].data;
     b->last = ngx_http_error_pages[err].data + ngx_http_error_pages[err].len;
 
-#if (T_NGX_SERVER_INFO)
+#if FALSE
     out[i].buf = b;
     out[i].next = &out[i + 1];
     i++;
