@@ -170,6 +170,8 @@ ngx_xquic_engine_init(ngx_cycle_t *cycle)
     ngx_http_xquic_main_conf_t  *qmcf = ngx_http_cycle_get_module_main_conf(cycle, ngx_http_xquic_module);
     xqc_engine_ssl_config_t *engine_ssl_config = NULL;
     xqc_config_t config;
+    ngx_str_t cert_path;
+    ngx_str_t key_path;
 
     if (xqc_engine_get_default_config(&config, XQC_ENGINE_SERVER) < 0) {
         return NGX_ERROR;
@@ -222,23 +224,36 @@ ngx_xquic_engine_init(ngx_cycle_t *cycle)
         return NGX_ERROR;
     }
 
+    cert_path = qmcf->certificate;
+    key_path = qmcf->certificate_key;
+
     /* copy cert key */
-    engine_ssl_config->private_key_file = ngx_pcalloc(cycle->pool, qmcf->certificate_key.len + 1);
+    if (ngx_get_full_name(cycle->pool, &cycle->conf_prefix, &key_path)) {
+        ngx_log_error(NGX_LOG_EMERG, cycle->log, 0, 
+                    "|xquic|ngx_xquic_engine_init: fail to alloc memory|");
+        return NGX_ERROR;
+    }
+    engine_ssl_config->private_key_file = (char *) ngx_pcalloc(cycle->pool, key_path.len + 1);
     if (engine_ssl_config->private_key_file == NULL) {
         ngx_log_error(NGX_LOG_EMERG, cycle->log, 0, 
-                    "|xquic|ngx_xquic_engine_init: fail to alloc memory|");     
+                    "|xquic|ngx_xquic_engine_init: fail to alloc memory|");
         return NGX_ERROR;
     }
-    ngx_memcpy(engine_ssl_config->private_key_file, qmcf->certificate_key.data, qmcf->certificate_key.len);
+    ngx_memcpy(engine_ssl_config->private_key_file, key_path.data, key_path.len);
 
     /* copy cert */
-    engine_ssl_config->cert_file = ngx_pcalloc(cycle->pool, qmcf->certificate.len + 1);
-    if (engine_ssl_config->cert_file == NULL) {
+    if (ngx_get_full_name(cycle->pool, &cycle->conf_prefix, &cert_path)) {
         ngx_log_error(NGX_LOG_EMERG, cycle->log, 0, 
-                    "|xquic|ngx_xquic_engine_init: fail to alloc memory|");     
+                    "|xquic|ngx_xquic_engine_init: fail to alloc memory|");
         return NGX_ERROR;
     }
-    ngx_memcpy(engine_ssl_config->cert_file, qmcf->certificate.data, qmcf->certificate.len);
+    engine_ssl_config->cert_file = (char *) ngx_pcalloc(cycle->pool, cert_path.len + 1);
+    if (engine_ssl_config->cert_file == NULL) {
+        ngx_log_error(NGX_LOG_EMERG, cycle->log, 0, 
+                    "|xquic|ngx_xquic_engine_init: fail to alloc memory|");
+        return NGX_ERROR;
+    }
+    ngx_memcpy(engine_ssl_config->cert_file, cert_path.data, cert_path.len);
 
     /* TODO: make configurable? */
     engine_ssl_config->ciphers = "TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384";
@@ -246,8 +261,8 @@ ngx_xquic_engine_init(ngx_cycle_t *cycle)
 
     /* copy session ticket */
     char g_ticket_file[NGX_XQUIC_TMP_BUF_LEN]={0};
-    char g_session_ticket_key[NGX_XQUIC_TMP_BUF_LEN];    
-    if (qmcf->session_ticket_key.data != NULL 
+    char g_session_ticket_key[NGX_XQUIC_TMP_BUF_LEN];
+    if (qmcf->session_ticket_key.data != NULL
         && qmcf->session_ticket_key.len != 0
         && qmcf->session_ticket_key.len < NGX_XQUIC_TMP_BUF_LEN) 
     {
