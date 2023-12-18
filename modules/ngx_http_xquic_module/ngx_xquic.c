@@ -229,13 +229,13 @@ ngx_xquic_engine_init(ngx_cycle_t *cycle)
 
     /* copy cert key */
     if (ngx_get_full_name(cycle->pool, &cycle->conf_prefix, &key_path)) {
-        ngx_log_error(NGX_LOG_EMERG, cycle->log, 0, 
+        ngx_log_error(NGX_LOG_EMERG, cycle->log, 0,
                     "|xquic|ngx_xquic_engine_init: fail to alloc memory|");
         return NGX_ERROR;
     }
     engine_ssl_config->private_key_file = (char *) ngx_pcalloc(cycle->pool, key_path.len + 1);
     if (engine_ssl_config->private_key_file == NULL) {
-        ngx_log_error(NGX_LOG_EMERG, cycle->log, 0, 
+        ngx_log_error(NGX_LOG_EMERG, cycle->log, 0,
                     "|xquic|ngx_xquic_engine_init: fail to alloc memory|");
         return NGX_ERROR;
     }
@@ -243,13 +243,13 @@ ngx_xquic_engine_init(ngx_cycle_t *cycle)
 
     /* copy cert */
     if (ngx_get_full_name(cycle->pool, &cycle->conf_prefix, &cert_path)) {
-        ngx_log_error(NGX_LOG_EMERG, cycle->log, 0, 
+        ngx_log_error(NGX_LOG_EMERG, cycle->log, 0,
                     "|xquic|ngx_xquic_engine_init: fail to alloc memory|");
         return NGX_ERROR;
     }
     engine_ssl_config->cert_file = (char *) ngx_pcalloc(cycle->pool, cert_path.len + 1);
     if (engine_ssl_config->cert_file == NULL) {
-        ngx_log_error(NGX_LOG_EMERG, cycle->log, 0, 
+        ngx_log_error(NGX_LOG_EMERG, cycle->log, 0,
                     "|xquic|ngx_xquic_engine_init: fail to alloc memory|");
         return NGX_ERROR;
     }
@@ -264,7 +264,7 @@ ngx_xquic_engine_init(ngx_cycle_t *cycle)
     char g_session_ticket_key[NGX_XQUIC_TMP_BUF_LEN];
     if (qmcf->session_ticket_key.data != NULL
         && qmcf->session_ticket_key.len != 0
-        && qmcf->session_ticket_key.len < NGX_XQUIC_TMP_BUF_LEN) 
+        && qmcf->session_ticket_key.len < NGX_XQUIC_TMP_BUF_LEN)
     {
         ngx_memcpy(g_ticket_file, qmcf->session_ticket_key.data, qmcf->session_ticket_key.len);
 
@@ -291,7 +291,7 @@ ngx_xquic_engine_init(ngx_cycle_t *cycle)
     }
 
     /* create engine */
-    qmcf->xquic_engine = xqc_engine_create(XQC_ENGINE_SERVER, &config, engine_ssl_config, 
+    qmcf->xquic_engine = xqc_engine_create(XQC_ENGINE_SERVER, &config, engine_ssl_config,
                                            &ngx_xquic_engine_callback, &ngx_xquic_transport_callbacks, qmcf);
     if (qmcf->xquic_engine == NULL) {
         ngx_log_error(NGX_LOG_EMERG, cycle->log, 0, 
