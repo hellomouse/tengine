@@ -7,9 +7,6 @@
 [submodule "deps/boringssl"]
 	path = deps/boringssl
 	url = https://github.com/google/boringssl
-[submodule "deps/ngx-fancyindex"]
-	path = deps/ngx-fancyindex
-	url = https://github.com/aperezdc/ngx-fancyindex
 [submodule "deps/njs"]
 	path = deps/njs
 	url = https://github.com/nginx/njs
@@ -22,3 +19,6 @@
 [submodule "deps/lua-resty-lrucache"]
 	path = deps/lua-resty-lrucache
 	url = https://github.com/openresty/lua-resty-lrucache
+[submodule "deps/ngx-fancyindex"]
+	path = deps/ngx-fancyindex
+	url = https://github.com/hellomouse/ngx-fancyindex
