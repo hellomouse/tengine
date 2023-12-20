@@ -1,6 +1,6 @@
 [submodule "deps/xquic"]
 	path = deps/xquic
-	url = https://github.com/hellomouse/xquic
+	url = https://github.com/alibaba/xquic
 [submodule "deps/luajit2"]
 	path = deps/luajit2
 	url = https://github.com/openresty/luajit2
