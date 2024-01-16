@@ -91,6 +91,7 @@ static u_char ngx_http_server_info_tail[] =
 #if FALSE
 static u_char ngx_http_error_banner[] =
 "<hr/>Powered by " TENGINE;
+#endif
 
 
 static u_char ngx_http_error_full_banner[] =
@@ -99,7 +100,6 @@ static u_char ngx_http_error_full_banner[] =
 
 static u_char ngx_http_error_powered_by[] =
 "<hr/>Powered by ";
-#endif
 #endif
 
 
@@ -800,18 +800,15 @@ ngx_http_send_special_response(ngx_http_request_t *r,
                                           + (ib ? (ib->last - ib->pos) : 0)
                                           + sizeof(ngx_http_error_tail) - 1;
 
-#if FALSE
         if (clcf->server_tag_type == NGX_HTTP_SERVER_TAG_ON) {
-            r->headers_out.content_length_n += clcf->server_tokens
-                ? sizeof(ngx_http_error_full_banner) - 1
-                : sizeof(ngx_http_error_banner) - 1;
-
+            if (clcf->server_tokens) {
+                r->headers_out.content_length_n += sizeof(ngx_http_error_full_banner) - 1;
+            }
         } else if (clcf->server_tag_type == NGX_HTTP_SERVER_TAG_CUSTOMIZED) {
             r->headers_out.content_length_n += sizeof(ngx_http_error_powered_by)
                                                - 1;
             r->headers_out.content_length_n += clcf->server_tag.len;
         }
-#endif
 #else
         r->headers_out.content_length_n = ngx_http_error_pages[err].len + len;
 #endif
@@ -879,7 +876,7 @@ ngx_http_send_special_response(ngx_http_request_t *r,
     b->pos = ngx_http_error_pages[err].data;
     b->last = ngx_http_error_pages[err].data + ngx_http_error_pages[err].len;
 
-#if FALSE
+#if (T_NGX_SERVER_INFO)
     out[i].buf = b;
     out[i].next = &out[i + 1];
     i++;
@@ -891,27 +888,22 @@ ngx_http_send_special_response(ngx_http_request_t *r,
     }
 
     if (clcf->server_tag_type == NGX_HTTP_SERVER_TAG_ON) {
-        b = ngx_calloc_buf(r->pool);
-        if (b == NULL) {
-            return NGX_ERROR;
-        }
-
-        b->memory = 1;
-
         if (clcf->server_tokens) {
+            b = ngx_calloc_buf(r->pool);
+            if (b == NULL) {
+                return NGX_ERROR;
+            }
+
+            b->memory = 1;
+
             b->pos = ngx_http_error_full_banner;
             b->last = ngx_http_error_full_banner
                       + sizeof(ngx_http_error_full_banner) - 1;
 
-        } else {
-            b->pos = ngx_http_error_banner;
-            b->last = ngx_http_error_banner + sizeof(ngx_http_error_banner) - 1;
+            out[i].buf = b;
+            out[i].next = &out[i + 1];
+            i++;
         }
-
-        out[i].buf = b;
-        out[i].next = &out[i + 1];
-        i++;
-
     } else if (clcf->server_tag_type == NGX_HTTP_SERVER_TAG_CUSTOMIZED) {
         b = ngx_calloc_buf(r->pool);
         if (b == NULL) {
